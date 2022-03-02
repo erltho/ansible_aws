@@ -1,0 +1,17 @@
+---
+- name: Using Podman Collection
+  hosts: localhost
+  tasks:
+  - name: Gather facts for all containers
+    containers.podman.podman_container_info:
+      executable: /opt/homebrew/bin/podman
+  - name: Create ansible_aws container
+    containers.podman.podman_container:
+      name: aws_ansible
+      image: 3f5d853868a5 
+      executable: /opt/homebrew/bin/podman
+      state: started
+      tty: yes
+      env_file: /Users/erltho/dev/github.com/erltho/ansible_aws/aws_env
+      mount: "type=bind,source=/Users/erltho/dev/github.com/erltho/ansible_aws/ansible/,destination=/mnt/"
+

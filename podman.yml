@@ -1,0 +1,38 @@
+---
+- hosts: localhost
+  tasks:
+  - name: installing podman
+    package:
+      name: "podman"
+      state: present
+  - name: Pull an image
+    containers.podman.podman_image: 
+      name: httpd
+      executable: /opt/homebrew/bin/podman
+  - name: Copying file into home
+    copy:
+      src: /root/ws1/index.html
+      dest: /home
+  - name: Re-create a redis container 
+    containers.podman.podman_container:
+      name: sarthak
+      executable: /opt/homebrew/bin/podman
+      image: httpd
+      state: started
+      detach: true
+      exposed_ports:
+        - 80
+      ports:
+        - 4444:80
+      volumes: /home/:/usr/local/apache2/htdocs/
+#  - name: Run ansible_aws container
+#    containers.podman.podman_container:
+#      name: ansible_aws
+#      image: localhost/local-debian:aws_ansible
+#      state: started
+#      detach: true
+#      exposed_ports:
+#        - 80
+#      ports:
+#        - 4444:80
+#      volumes: $(pwd):/usr/local/ansible_test
